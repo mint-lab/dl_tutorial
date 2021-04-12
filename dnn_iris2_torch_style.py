@@ -34,10 +34,11 @@ class TwoLayerNN(nn.Module):
         return x
 
 # Train a model with the given batches
-def train(model, train_loader, loss_fn, optimizer, dev='cpu'):
-    model.train() # Notify layers (e.g. DropOut, BatchNorm) that it's the training mode
-    train_loss = 0
-    for batch_idx, (x, y) in enumerate(train_loader):
+def train(model, batch_data, loss_fn, optimizer):
+    model.train()
+    train_loss, n_data = 0, 0
+    dev = next(model.parameters()).device
+    for batch_idx, (x, y) in enumerate(batch_data):
         x, y = x.to(dev), y.to(dev)
         optimizer.zero_grad()
         output = model(x)
@@ -46,14 +47,16 @@ def train(model, train_loader, loss_fn, optimizer, dev='cpu'):
         optimizer.step()
 
         train_loss += loss.item()
-    return train_loss / len(train_loader.dataset)
+        n_data += len(y)
+    return train_loss / n_data
 
 # Evaluate a model
-def evaluate(model, test_loader, loss_fn, dev='cpu'):
-    model.eval() # Notify layers (e.g. DropOut, BatchNorm) that it's the evaluation mode
-    test_loss, n_correct = 0, 0
+def evaluate(model, batch_data, loss_fn):
+    model.eval()
+    test_loss, n_correct, n_data = 0, 0, 0
     with torch.no_grad():
-        for x, y in test_loader:
+        dev = next(model.parameters()).device
+        for x, y in batch_data:
             x, y = x.to(dev), y.to(dev)
             output = model(x)
             loss = loss_fn(output, y)
@@ -61,7 +64,8 @@ def evaluate(model, test_loader, loss_fn, dev='cpu'):
 
             test_loss += loss.item()
             n_correct += (y == y_pred).sum().item()
-    return test_loss / len(test_loader.dataset), n_correct / len(test_loader.dataset)
+            n_data += len(y)
+    return test_loss / n_data, n_correct / n_data
 
 
 
@@ -75,8 +79,8 @@ if __name__ == '__main__':
     iris.color = np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)])
 
     # 1.2. Wrap the dataset with torch.utils.data.DataLoader
-    x = torch.tensor(iris.data, dtype=torch.float32)
-    y = torch.tensor(iris.target, dtype=torch.long)
+    x = torch.tensor(iris.data, dtype=torch.float32, device=dev)
+    y = torch.tensor(iris.target, dtype=torch.long, device=dev)
     train_data = torch.utils.data.TensorDataset(x, y)
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 
@@ -89,12 +93,12 @@ if __name__ == '__main__':
     loss_list = []
     start = time.time()
     for epoch in range(1, EPOCH_MAX + 1):
-        train_loss = train(model, train_loader, loss_fn, optimizer, dev)
-        valid_loss, valid_accuracy = evaluate(model, train_loader, loss_fn, dev)
+        train_loss = train(model, train_loader, loss_fn, optimizer)
+        valid_loss, valid_accuracy = evaluate(model, train_loader, loss_fn)
 
         loss_list.append([epoch, train_loss, valid_loss, valid_accuracy])
         if epoch % EPOCH_LOG == 0:
-            print(f'{epoch:>6} ({(time.time()-start)/60:.1f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
+            print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
     elapse = time.time() - start
 
     # Visualize the loss curves

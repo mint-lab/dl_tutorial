@@ -12,6 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import unicodedata, os
 import glob, time, random
+from dnn_iris2_torch_style import train, evaluate
 
 # Define global constants
 __LETTER_DICT__ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'"
@@ -69,40 +70,6 @@ class RNN(nn.Module):
         x = self.fc(output[-1]) # Use output of the last sequence
         return x
 
-# Train a model with the given batches
-def train(model, batch_data, loss_fn, optimizer):
-    model.train()
-    train_loss, n_data = 0, 0
-    dev = next(model.parameters()).device
-    for batch_idx, (x, y) in enumerate(batch_data):
-        x, y = x.to(dev), y.to(dev)
-        optimizer.zero_grad()
-        output = model(x)
-        loss = loss_fn(output, y)
-        loss.backward()
-        optimizer.step()
-
-        train_loss += loss.item()
-        n_data += len(y)
-    return train_loss / n_data
-
-# Evaluate a model
-def evaluate(model, batch_data, loss_fn):
-    model.eval()
-    test_loss, n_correct, n_data = 0, 0, 0
-    with torch.no_grad():
-        dev = next(model.parameters()).device
-        for x, y in batch_data:
-            x, y = x.to(dev), y.to(dev)
-            output = model(x)
-            loss = loss_fn(output, y)
-            y_pred = torch.argmax(output, dim=1)
-
-            test_loss += loss.item()
-            n_correct += (y == y_pred).sum().item()
-            n_data += len(y)
-    return test_loss / n_data, n_correct / n_data
-
 # Predict a result of the given datum
 def predict(text, model, target_names, n_predict=5):
     print(f'* Name: {text}')
@@ -140,7 +107,7 @@ if __name__ == '__main__':
 
         loss_list.append([epoch, train_loss, valid_loss, valid_accuracy])
         if epoch % EPOCH_LOG == 0:
-            print(f'{epoch:>6} ({(time.time()-start)/60:.1f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
+            print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
     elapse = time.time() - start
 
     # 4. Visualize the loss curves
@@ -155,7 +122,7 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
-    # 5. Test your text
+    # 5. Test your texts
     predict('Choi', model, target_names)
     predict('Jane', model, target_names)
     predict('Daniel', model, target_names)

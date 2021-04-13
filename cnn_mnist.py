@@ -13,6 +13,7 @@ import torchvision.transforms.functional as TF
 import numpy as np
 import matplotlib.pyplot as plt
 import time, PIL
+from sklearn import metrics
 from dnn_iris2_torch_style import train, evaluate
 
 # Define hyperparameters
@@ -27,6 +28,9 @@ SAVE_MODEL = 'cnn_mnist.pt' # Make empty('') if you don't want save the model
 RANDOM_SEED = 777
 
 # A four-layer CNN model
+# - Try more or less layers, channels, and kernel size
+# - Try to apply batch normalization (e.g. 'nn.BatchNorm' and 'nn.BatchNorm2d')
+# - Try to apply skip connection (used in ResNet)
 class MyCNN(nn.Module):
     def __init__(self):
         super(MyCNN, self).__init__()
@@ -102,7 +106,7 @@ if __name__ == '__main__':
 
     # 2. Instantiate a model, loss function, and optimizer
     model = MyCNN().to(dev)
-    loss_fn = F.cross_entropy
+    loss_func = F.cross_entropy
     optimizer = torch.optim.SGD(model.parameters(), **OPTIMIZER_PARAM)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, **SCHEDULER_PARAM)
 
@@ -110,21 +114,22 @@ if __name__ == '__main__':
     loss_list = []
     start = time.time()
     for epoch in range(1, EPOCH_MAX + 1):
-        train_loss = train(model, loader_train, loss_fn, optimizer)
-        valid_loss, valid_accuracy = evaluate(model, loader_valid, loss_fn)
+        train_loss = train(model, loader_train, loss_func, optimizer)
+        valid_loss, valid_accuracy = evaluate(model, loader_valid, loss_func)
         scheduler.step()
 
         loss_list.append([epoch, train_loss, valid_loss, valid_accuracy])
         if epoch % EPOCH_LOG == 0:
-            print(f'{epoch:>6} ({(time.time()-start)/60:6.2f} min), TrLoss={train_loss:.6f}, VaLoss={valid_loss:.6f}, VaAcc={valid_accuracy:.3f}, lr={scheduler.get_last_lr()}')
-    elapse = time.time() - start
+            elapse = (time.time() - start) / 60
+            print(f'{epoch:>6} ({elapse:>6.2f} min), TrLoss={train_loss:.6f}, VaLoss={valid_loss:.6f}, VaAcc={valid_accuracy:.3f}, lr={scheduler.get_last_lr()}')
+    elapse = (time.time() - start) / 60
 
     # 3.2. Save the trained model if necessary
     if SAVE_MODEL:
         torch.save(model.state_dict(), SAVE_MODEL)
 
     # 4.1. Visualize the loss curves
-    plt.title(f'Training and Validation Losses (time: {elapse/60:.2f} [min] @ CUDA: {USE_CUDA})')
+    plt.title(f'Training and Validation Losses (time: {elapse:.2f} [min] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
     plt.plot(loss_array[:,0], loss_array[:,1], label='Training Loss')
     plt.plot(loss_array[:,0], loss_array[:,2], label='Validation Loss')
@@ -135,7 +140,13 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
-    # 5. Test the model
+    # 4.2. Visualize the confusion matrix
+    predicts = [predict(datum, model) for datum in data_valid.data]
+    conf_mat = metrics.confusion_matrix(data_valid.targets, predicts)
+    conf_fig = metrics.ConfusionMatrixDisplay(conf_mat)
+    conf_fig.plot()
+
+    # 5. Test your image
     print(predict(data_train.data[0], model)) # 5
     with PIL.Image.open('data/cnn_mnist_test.png').convert('L') as image:
         print(predict(image, model))          # 3

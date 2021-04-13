@@ -33,7 +33,7 @@ class MyCNN(nn.Module):
         # Input :      (batch_size,  1, 28, 28)
         # Layer1: conv (batch_size, 32, 28, 28)
         #         pool (batch_size, 32, 14, 14)
-        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1) # C_in, C_out, ...
+        self.conv1 = nn.Conv2d(1, 32, kernel_size=3, stride=1, padding=1)
         self.pool1 = nn.MaxPool2d(kernel_size=2)
 
         # Layer2: conv (batch_size, 64, 14, 14)

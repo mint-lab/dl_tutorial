@@ -12,7 +12,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import unicodedata, os
 import glob, time, random
-from dnn_iris2_torch_style import train, evaluate
+from dnn_iris2_torch_style import train
 
 # Define global constants
 __LETTER_DICT__ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'"
@@ -57,11 +57,12 @@ def text2onehot(text, device='cpu'):
 
 # A simple RNN model
 # - Try a different RNN unit such LSTM and GRU
-# - Try less or more hidden units and more RNN units
+# - Try less or more hidden units
+# - Try more layers (e.g. 'num_layers=2') and dropout (e.g. 'dropout=0.4')
 HIDDEN_SIZE = 128
-class RNN(nn.Module):
+class MyRNN(nn.Module):
     def __init__(self, input_size, output_size):
-        super(RNN, self).__init__()
+        super(MyRNN, self).__init__()
         self.rnn = torch.nn.RNN(input_size, HIDDEN_SIZE)
         self.fc  = torch.nn.Linear(HIDDEN_SIZE, output_size)
 
@@ -90,10 +91,11 @@ if __name__ == '__main__':
 
     # 1. Load the name2lang dataset
     data, target, target_names = load_name_dataset(glob.glob(DATA_PATH))
-    xy_tensor = [(text2onehot(data[i], device=dev), torch.LongTensor([target[i]]).to(dev)) for i in range(len(data))]
+    data_all = [(text2onehot(data[i], device=dev), torch.LongTensor([target[i]]).to(dev)) for i in range(len(data))]
+    random.shuffle(data_all)
 
     # 2. Instantiate a model, loss function, and optimizer
-    model = RNN(len(__LETTER_DICT__), len(target_names)).to(dev)
+    model = MyRNN(len(__LETTER_DICT__), len(target_names)).to(dev)
     loss_fn = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), lr=OPT_LEARN_RATE)
 
@@ -101,20 +103,17 @@ if __name__ == '__main__':
     loss_list = []
     start = time.time()
     for epoch in range(1, EPOCH_MAX + 1):
-        random.shuffle(xy_tensor)
-        train_loss = train(model, xy_tensor, loss_fn, optimizer)
-        valid_loss, valid_accuracy = evaluate(model, xy_tensor, loss_fn)
+        train_loss = train(model, data_all, loss_fn, optimizer)
 
-        loss_list.append([epoch, train_loss, valid_loss, valid_accuracy])
+        loss_list.append([epoch, train_loss])
         if epoch % EPOCH_LOG == 0:
-            print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
+            print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}')
     elapse = time.time() - start
 
     # 4. Visualize the loss curves
-    plt.title(f'Training and Test Losses (time: {elapse:.3f} [sec] @ CUDA: {USE_CUDA})')
+    plt.title(f'Training Loss (time: {elapse:.3f} [sec] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
     plt.plot(loss_array[:,0], loss_array[:,1], label='Training Loss')
-    plt.plot(loss_array[:,0], loss_array[:,2], label='Validation Loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss values')
     plt.xlim(loss_array[0,0], loss_array[-1,0])

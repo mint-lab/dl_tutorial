@@ -19,9 +19,9 @@ USE_CUDA = torch.cuda.is_available() # Try False for 'cpu'
 
 # A Two-layer NN model
 HIDDEN_SIZE = 4
-class TwoLayerNN(nn.Module):
+class MyDNN(nn.Module):
     def __init__(self, input_size, output_size):
-        super(TwoLayerNN, self).__init__()
+        super(MyDNN, self).__init__()
         self.fc1 = nn.Linear(input_size, HIDDEN_SIZE)
         self.fc2 = nn.Linear(HIDDEN_SIZE, output_size)
 
@@ -85,7 +85,7 @@ if __name__ == '__main__':
     train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
 
     # 2. Instantiate a model, loss function, and optimizer
-    model = TwoLayerNN(len(iris.feature_names), len(iris.target_names)).to(dev)
+    model = MyDNN(len(iris.feature_names), len(iris.target_names)).to(dev)
     loss_fn = F.cross_entropy
     optimizer = torch.optim.SGD(model.parameters(), lr=OPT_LEARN_RATE)
 
@@ -101,8 +101,8 @@ if __name__ == '__main__':
             print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
     elapse = time.time() - start
 
-    # Visualize the loss curves
-    plt.title(f'Training and Validation Losses (time: {elapse:.3f} [sec] @ CUDA: {USE_CUDA})')
+    # 4.1. Visualize the loss curves
+    plt.title(f'Training and Validation Losses (time: {elapse/60:.2f} [min] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
     plt.plot(loss_array[:,0], loss_array[:,1], label='Training Loss')
     plt.plot(loss_array[:,0], loss_array[:,2], label='Validation Loss')
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     plt.legend()
     plt.show()
 
-    # Visualize training results (decision boundaries)
+    # 4.2. Visualize training results (decision boundaries)
     x_min, x_max = iris.data[:, 0].min() - 1, iris.data[:, 0].max() + 1
     y_min, y_max = iris.data[:, 1].min() - 1, iris.data[:, 1].max() + 1
     xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01))
@@ -122,7 +122,7 @@ if __name__ == '__main__':
     zz = torch.argmax(model(xy_tensor), dim=1).cpu().detach().numpy()
     plt.contourf(xx, yy, zz.reshape(xx.shape), cmap=ListedColormap(iris.color), alpha=0.2)
 
-    # Visualize testing results
+    # 4.3. Visualize testing results
     plt.title(f'Fully-connected NN (accuracy: {loss_array[-1,-1]:.3f})')
     predict = torch.argmax(model(x.to(dev)), dim=1).cpu().detach().numpy()
     plt.scatter(iris.data[:,0], iris.data[:,1], c=iris.color[iris.target], edgecolors=iris.color[predict])

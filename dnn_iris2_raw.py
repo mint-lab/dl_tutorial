@@ -50,7 +50,7 @@ for i in range(epochs):
 elapse = time.time() - start
 
 # Visualize the training loss curve
-plt.title(f'Training Loss (time: {elapse:.3f} [sec] @ {dev_name})')
+plt.title(f'Training Loss (time: {elapse/60:.2f} [min] @ {dev_name})')
 plt.plot(range(1, epochs + 1), loss_list)
 plt.xlabel('Epochs')
 plt.ylabel('Loss values')

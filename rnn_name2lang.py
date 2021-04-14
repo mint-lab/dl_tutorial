@@ -13,10 +13,7 @@ import matplotlib.pyplot as plt
 import matplotlib.ticker as ticker
 import unicodedata, os
 import time, glob, random, sklearn
-from dnn_iris2_torch_style import train
-
-# Define global constants
-__LETTER_DICT__ = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'"
+from dnn_iris2 import train
 
 # Define hyperparameters
 EPOCH_MAX = 20
@@ -27,13 +24,14 @@ DATA_PATH = './data/names/*.txt'
 USE_CUDA = torch.cuda.is_available()
 SAVE_MODEL = 'rnn_name2lang.pt' # Make empty('') if you don't want save the model
 RANDOM_SEED = 777
+LETTER_DICT = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ .,;'"
 
 # Convert Unicode to ASCII
 # e.g. Ślusàrski to Slusarski
 def unicode2ascii(s):
     return ''.join(
         c for c in unicodedata.normalize('NFD', s)
-        if unicodedata.category(c) != 'Mn' and c in __LETTER_DICT__)
+        if unicodedata.category(c) != 'Mn' and c in LETTER_DICT)
 
 # Read raw files which contain names belong to each language
 # cf. Each filename is used as its target's name.
@@ -51,12 +49,12 @@ def load_name_dataset(files):
     return data, targets, target_names
 
 # Transform the given text to its one-hot encoded tensor
-# cf. Tensor size: len(text) x 1 x len(__LETTER_DICT__)
+# cf. Tensor size: len(text) x 1 x len(LETTER_DICT)
 #                  sequence_length x batch_size x input_size
 def text2onehot(text, device='cpu'):
-    tensor = torch.zeros(len(text), 1, len(__LETTER_DICT__), device=device)
+    tensor = torch.zeros(len(text), 1, len(LETTER_DICT), device=device)
     for idx, letter in enumerate(text):
-        tensor[idx][0][__LETTER_DICT__.find(letter)] = 1
+        tensor[idx][0][LETTER_DICT.find(letter)] = 1
     return tensor
 
 # A simple RNN model
@@ -64,8 +62,8 @@ def text2onehot(text, device='cpu'):
 # - Try less or more hidden units
 # - Try more layers (e.g. 'num_layers=2') and dropout (e.g. 'dropout=0.4')
 class MyRNN(nn.Module):
-    def __init__(self, input_size, output_size):
-        super(MyRNN, self).__init__()
+    def init(self, input_size, output_size):
+        super(MyRNN, self).init()
         self.rnn = torch.nn.RNN(input_size, 128)
         self.fc = torch.nn.Linear(128, output_size)
 
@@ -110,7 +108,7 @@ if __name__ == '__main__':
     random.shuffle(data_train)
 
     # 2. Instantiate a model, loss function, and optimizer
-    model = MyRNN(len(__LETTER_DICT__), len(target_names)).to(dev)
+    model = MyRNN(len(LETTER_DICT), len(target_names)).to(dev)
     loss_func = nn.CrossEntropyLoss()
     optimizer = torch.optim.SGD(model.parameters(), **OPTIMIZER_PARAM)
     scheduler = torch.optim.lr_scheduler.StepLR(optimizer, **SCHEDULER_PARAM)

@@ -14,7 +14,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import time, PIL
 from sklearn import metrics
-from dnn_iris2_torch_style import train, evaluate
+from dnn_iris2 import train, evaluate
 
 # Define hyperparameters
 EPOCH_MAX = 50

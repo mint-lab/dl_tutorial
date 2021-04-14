@@ -13,17 +13,17 @@ import time
 # Define hyperparameters
 EPOCH_MAX = 10000
 EPOCH_LOG = 1000
-BATCH_SIZE = 50
-OPT_LEARN_RATE = 0.01
+OPTIMIZER_PARAM = {'lr': 0.01}
+DATA_LOADER_PARAM = { 'batch_size': 50, 'shuffle': True }
 USE_CUDA = torch.cuda.is_available() # Try False for 'cpu'
+RANDOM_SEED = 777
 
-# A Two-layer NN model
-HIDDEN_SIZE = 4
+# A two-layer NN model
 class MyDNN(nn.Module):
-    def __init__(self, input_size, output_size):
+    def __init__(self, input_size=2, output_size=3):
         super(MyDNN, self).__init__()
-        self.fc1 = nn.Linear(input_size, HIDDEN_SIZE)
-        self.fc2 = nn.Linear(HIDDEN_SIZE, output_size)
+        self.fc1 = nn.Linear(input_size, 4)
+        self.fc2 = nn.Linear(4, output_size)
 
         nn.init.xavier_uniform_(self.fc1.weight)
         nn.init.xavier_uniform_(self.fc2.weight)
@@ -34,7 +34,7 @@ class MyDNN(nn.Module):
         return x
 
 # Train a model with the given batches
-def train(model, batch_data, loss_fn, optimizer):
+def train(model, batch_data, loss_func, optimizer):
     model.train()
     train_loss, n_data = 0, 0
     dev = next(model.parameters()).device
@@ -42,7 +42,7 @@ def train(model, batch_data, loss_fn, optimizer):
         x, y = x.to(dev), y.to(dev)
         optimizer.zero_grad()
         output = model(x)
-        loss = loss_fn(output, y)
+        loss = loss_func(output, y)
         loss.backward()
         optimizer.step()
 
@@ -50,8 +50,8 @@ def train(model, batch_data, loss_fn, optimizer):
         n_data += len(y)
     return train_loss / n_data
 
-# Evaluate a model
-def evaluate(model, batch_data, loss_fn):
+# Evaluate a model with the given batches
+def evaluate(model, batch_data, loss_func):
     model.eval()
     test_loss, n_correct, n_data = 0, 0, 0
     with torch.no_grad():
@@ -59,7 +59,7 @@ def evaluate(model, batch_data, loss_fn):
         for x, y in batch_data:
             x, y = x.to(dev), y.to(dev)
             output = model(x)
-            loss = loss_fn(output, y)
+            loss = loss_func(output, y)
             y_pred = torch.argmax(output, dim=1)
 
             test_loss += loss.item()
@@ -67,9 +67,11 @@ def evaluate(model, batch_data, loss_fn):
             n_data += len(y)
     return test_loss / n_data, n_correct / n_data
 
-
-
 if __name__ == '__main__':
+    # 0. Preparation
+    torch.manual_seed(RANDOM_SEED)
+    if USE_CUDA:
+        torch.cuda.manual_seed_all(RANDOM_SEED)
     dev = torch.device('cuda' if USE_CUDA else 'cpu')
 
     # 1.1. Load the Iris dataset partially
@@ -81,28 +83,29 @@ if __name__ == '__main__':
     # 1.2. Wrap the dataset with torch.utils.data.DataLoader
     x = torch.tensor(iris.data, dtype=torch.float32, device=dev)
     y = torch.tensor(iris.target, dtype=torch.long, device=dev)
-    train_data = torch.utils.data.TensorDataset(x, y)
-    train_loader = torch.utils.data.DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    data_train = torch.utils.data.TensorDataset(x, y)
+    loader_train = torch.utils.data.DataLoader(data_train, **DATA_LOADER_PARAM)
 
     # 2. Instantiate a model, loss function, and optimizer
-    model = MyDNN(len(iris.feature_names), len(iris.target_names)).to(dev)
-    loss_fn = F.cross_entropy
-    optimizer = torch.optim.SGD(model.parameters(), lr=OPT_LEARN_RATE)
+    model = MyDNN().to(dev)
+    loss_func = F.cross_entropy
+    optimizer = torch.optim.SGD(model.parameters(), **OPTIMIZER_PARAM)
 
     # 3. Train the model
     loss_list = []
     start = time.time()
     for epoch in range(1, EPOCH_MAX + 1):
-        train_loss = train(model, train_loader, loss_fn, optimizer)
-        valid_loss, valid_accuracy = evaluate(model, train_loader, loss_fn)
+        train_loss = train(model, loader_train, loss_func, optimizer)
+        valid_loss, valid_accuracy = evaluate(model, loader_train, loss_func)
 
         loss_list.append([epoch, train_loss, valid_loss, valid_accuracy])
         if epoch % EPOCH_LOG == 0:
-            print(f'{epoch:>6} ({(time.time()-start)/60:.2f} min), TrainLoss={train_loss:.6f}, ValidLoss={valid_loss:.6f}, ValidAcc={valid_accuracy:.3f}')
+            elapse = time.time() - start
+            print(f'{epoch:>6} ({elapse:>6.2f} sec), TrLoss={train_loss:.6f}, VaLoss={valid_loss:.6f}, VaAcc={valid_accuracy:.3f}')
     elapse = time.time() - start
 
     # 4.1. Visualize the loss curves
-    plt.title(f'Training and Validation Losses (time: {elapse/60:.2f} [min] @ CUDA: {USE_CUDA})')
+    plt.title(f'Training and Validation Losses (time: {elapse:.2f} [sec] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
     plt.plot(loss_array[:,0], loss_array[:,1], label='Training Loss')
     plt.plot(loss_array[:,0], loss_array[:,2], label='Validation Loss')
@@ -122,9 +125,9 @@ if __name__ == '__main__':
     zz = torch.argmax(model(xy_tensor), dim=1).cpu().detach().numpy()
     plt.contourf(xx, yy, zz.reshape(xx.shape), cmap=ListedColormap(iris.color), alpha=0.2)
 
-    # 4.3. Visualize testing results
-    plt.title(f'Fully-connected NN (accuracy: {loss_array[-1,-1]:.3f})')
+    # 4.3. Visualize data with their classification
     predict = torch.argmax(model(x.to(dev)), dim=1).cpu().detach().numpy()
+    plt.title(f'Fully-connected NN (accuracy: {loss_list[-1][-1]:.3f})')
     plt.scatter(iris.data[:,0], iris.data[:,1], c=iris.color[iris.target], edgecolors=iris.color[predict])
     plt.xlabel(iris.feature_names[0])
     plt.ylabel(iris.feature_names[1])

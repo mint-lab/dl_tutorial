@@ -1,6 +1,6 @@
 #!/usr/bin/python
 #-*- coding: utf-8 -*-
-"""Name-to-Language Classification with Character-level RNN
+"""Name-to-Language Classification with a Character-level RNN
 
 This example is modified and improved from the PyTorch official tutorial as follows:
 - Link: https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial
@@ -77,9 +77,10 @@ def predict(text, model):
     model.eval()
     with torch.no_grad():
         dev = next(model.parameters()).device
-        text_tensor = text2onehot(text, dev)
-        output = model(text_tensor)[0]
-        return torch.argmax(output).item()
+        text_tensor = text2onehot(text, dev) # Convert text to one-hot vectors
+        output = model(text_tensor)[0]       # Get the last output
+        lang = torch.argmax(output)          # Get the best among 18 classes
+        return lang.item()
 
 # Predict and report top-k results of the given text
 def report_predict(text, model, target_names, n_predict=5):
@@ -89,8 +90,8 @@ def report_predict(text, model, target_names, n_predict=5):
         dev = next(model.parameters()).device
         text_tensor = text2onehot(text, dev)
         output = model(text_tensor)[0]
-        prob = nn.functional.softmax(output, dim=0)
-        top_val, top_idx = prob.topk(n_predict)  # Get top-k predictions
+        prob = nn.functional.softmax(output, dim=0) # Make output as probability
+        top_val, top_idx = prob.topk(n_predict)     # Get top-k among 18 classes
         for i in range(len(top_val)):
             print(f'  {i+1}. {target_names[top_idx[i].item()]:<10}: {top_val[i]*100:4.1f} %')
 
@@ -130,7 +131,7 @@ if __name__ == '__main__':
     if SAVE_MODEL:
         torch.save(model.state_dict(), SAVE_MODEL)
 
-    # 4. Visualize the loss curves
+    # 4.1. Visualize the loss curves
     plt.title(f'Training Loss (time: {elapse:.2f} [min] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
     plt.plot(loss_array[:, 0], loss_array[:, 1], label='Training Loss')

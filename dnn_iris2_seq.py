@@ -33,10 +33,10 @@ model = nn.Sequential(
 # 3. Train the model
 loss_func = nn.CrossEntropyLoss()
 optimizer = torch.optim.SGD(model.parameters(), lr=0.01) # Try other optimizers
-epochs = 10000
+epoch_max = 10000
 loss_list = []
 start = time.time()
-for i in range(epochs):
+for i in range(epoch_max):
     # Train one iteration
     optimizer.zero_grad()
     output = model(x)

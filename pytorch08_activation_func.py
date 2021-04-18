@@ -8,6 +8,7 @@ activation_funcs = [
     {'name': 'ReLU',       'func': nn.ReLU()},
     {'name': 'Leaky ReLU', 'func': nn.LeakyReLU(0.1)},
     {'name': 'ELU',        'func': nn.ELU()},
+    # Try more activation functions
 ]
 
 for act in activation_funcs:

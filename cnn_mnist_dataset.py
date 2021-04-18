@@ -12,7 +12,7 @@ torchvision.datasets.MNIST.resources = [
 
 # Load the MNIST dataset
 DATA_PATH = './data'
-data_train = torchvision.datasets.MNIST(DATA_PATH, train=True,  download=True)
+data_train = torchvision.datasets.MNIST(DATA_PATH, train=True, download=True)
 data_valid = torchvision.datasets.MNIST(DATA_PATH, train=False)
 
 # Look inside of the dataset

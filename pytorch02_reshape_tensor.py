@@ -27,7 +27,7 @@ print(u1.shape, u1)     # torch.Size([2, 1, 4])
 u2 = ss.unsqueeze(2)    # tensor([[[29], [3], [18], [10]], [[27], [10], [12], [5]]])
 print(u2.shape, u2)     # torch.Size([2, 4, 1])
 
-# Change indices each other, (i, j) to (j, i)
+# Switch indices each other, (i, j) to (j, i)
 t_021 = y.transpose(1, 2)           # tensor([[[29, 18],
 print(t_021, t_021.is_contiguous()) #          [ 3, 10]], ... ]) False
 c_021 = t_021.contiguous()          # tensor([[[29, 18],

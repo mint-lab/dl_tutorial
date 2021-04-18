@@ -15,7 +15,7 @@ EPOCH_MAX = 10000
 EPOCH_LOG = 1000
 OPTIMIZER_PARAM = {'lr': 0.01}
 DATA_LOADER_PARAM = { 'batch_size': 50, 'shuffle': True }
-USE_CUDA = torch.cuda.is_available() # Try False for 'cpu'
+USE_CUDA = torch.cuda.is_available()
 RANDOM_SEED = 777
 
 # A two-layer NN model
@@ -35,7 +35,7 @@ class MyDNN(nn.Module):
 
 # Train a model with the given batches
 def train(model, batch_data, loss_func, optimizer):
-    model.train()
+    model.train()  # Notify layers (e.g. DropOut, BatchNorm) that it’s now training
     train_loss, n_data = 0, 0
     dev = next(model.parameters()).device
     for batch_idx, (x, y) in enumerate(batch_data):
@@ -52,7 +52,7 @@ def train(model, batch_data, loss_func, optimizer):
 
 # Evaluate a model with the given batches
 def evaluate(model, batch_data, loss_func):
-    model.eval()
+    model.eval()  # Notify layers (e.g. DropOut, BatchNorm) that it’s now testing
     test_loss, n_correct, n_data = 0, 0, 0
     with torch.no_grad():
         dev = next(model.parameters()).device

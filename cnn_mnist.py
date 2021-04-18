@@ -34,6 +34,7 @@ RANDOM_SEED = 777
 class MyCNN(nn.Module):
     def __init__(self):
         super(MyCNN, self).__init__()
+        # Notation:    (batch_size, channel, height, width)
         # Input :      (batch_size,  1, 28, 28)
         # Layer1: conv (batch_size, 32, 28, 28)
         #         pool (batch_size, 32, 14, 14)
@@ -47,11 +48,11 @@ class MyCNN(nn.Module):
         self.drop2 = nn.Dropout(0.2)
 
         # Input :      (batch_size, 64*7*7)
-        # Layer3: fcon (batch_size, 512)
+        # Layer3: fc   (batch_size, 512)
         self.fc3   = nn.Linear(64*7*7, 512)
         self.drop3 = nn.Dropout(0.2)
 
-        # Layer4: fcon (batch_size, 10)
+        # Layer4: fc   (batch_size, 10)
         self.fc4   = nn.Linear(512, 10)
 
     def forward(self, x):
@@ -75,16 +76,16 @@ def predict(image, model):
     with torch.no_grad():
         # Convert the given image to its 1 x 1 x 28 x 28 tensor
         if type(image) is torch.Tensor:
-            tensor = image.type(torch.float) / 255 # Normalize to [0, 1]
+            tensor = image.type(torch.float) / 255  # Normalize to [0, 1]
         else:
-            tensor = 1 - TF.to_tensor(image)     # Invert (white to black)
+            tensor = 1 - TF.to_tensor(image)        # Invert (white to black)
         if tensor.ndim < 3:
             tensor = tensor.unsqueeze(0)
         if tensor.shape[0] == 3:
-            tensor = TF.rgb_to_grayscale(tensor)   # Make grayscale
-        tensor = TF.resize(tensor, 28)             # Resize to 28 x 28
+            tensor = TF.rgb_to_grayscale(tensor)    # Make grayscale
+        tensor = TF.resize(tensor, 28)              # Resize to 28 x 28
         dev = next(model.parameters()).device
-        tensor = tensor.unsqueeze(0).to(dev)       # Add onw more dims
+        tensor = tensor.unsqueeze(0).to(dev)        # Add onw more dims
 
         output = model(tensor)
         digit = torch.argmax(output, dim=1)

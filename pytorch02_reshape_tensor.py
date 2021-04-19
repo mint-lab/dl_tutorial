@@ -46,7 +46,7 @@ print(t_021)                        # tensor([[[27, 18], ...], ...])
 print(c_021)                        # tensor([[[29, 18], ...], ...])
 
 # Copy a tensor and detach it from its connected computational graph
-z = y.clone().detach()
+z = y.clone().detach()              # cf. x.clone()
 y[0,0,0] = 1
 print(y)                            # tensor([[[ 1, 3], ...], ...])
 print(z)                            # tensor([[[27, 3], ...], ...])

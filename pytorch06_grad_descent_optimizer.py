@@ -22,7 +22,7 @@ for i in range(max_iter):
     optimizer.zero_grad()       # Reset gradient tracking
     y = f(x)                    # Calculate the function (forward)
     y.backward()                # Calculate the gradient (backward)
-    xp = x.clone().detach()     # cf. xp = x
+    xp = x.clone().detach()     # Note) xp = x
     optimizer.step()            # Update 'x'
 
     # Update visualization for each iteration

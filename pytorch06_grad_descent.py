@@ -24,10 +24,10 @@ for i in range(max_iter):
     y.backward()                # Calculate the gradient (backward)
 
     # Run the gradient descent
-    xp = x.clone().detach()     # cf. xp = x
+    xp = x.clone().detach()     # Note) xp = x
     with torch.no_grad():       # Disable gradient tracking
-        x -= learn_rate*x.grad  # cf. x = x - learn_rate*fd(x) is an original code.
-                                #     x = x - learn_rate*x.grad() does not work!
+        x -= learn_rate*x.grad  # Note) x = x - learn_rate*fd(x) is an original code.
+                                #       x = x - learn_rate*x.grad() does not work!
 
     # Update visualization for each iteration
     print(f'Iter: {i}, x = {xp:.3f} to {x:.3f}, f(x) = {f(xp):.3f} to {f(x):.3f} (f\'(x) = {x.grad:.3f})')

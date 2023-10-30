@@ -34,7 +34,7 @@ def unicode2ascii(s):
         if unicodedata.category(c) != 'Mn' and c in LETTER_DICT)
 
 # Read raw files which contain names belong to each language
-# cf. Each filename is used as its target's name.
+# Note) Each filename is used as its target's name.
 def load_name_dataset(files):
     data = []
     targets = []
@@ -49,7 +49,7 @@ def load_name_dataset(files):
     return data, targets, target_names
 
 # Transform the given text to its one-hot encoded tensor
-# cf. Tensor size: len(text) x 1 x len(LETTER_DICT)
+# Note) Tensor size: len(text) x 1 x len(LETTER_DICT)
 #                  sequence_length x batch_size x input_size
 def text2onehot(text, device='cpu'):
     tensor = torch.zeros(len(text), 1, len(LETTER_DICT), device=device)
@@ -134,7 +134,7 @@ if __name__ == '__main__':
     # 4.1. Visualize the loss curves
     plt.title(f'Training Loss (time: {elapse:.2f} [min] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
-    plt.plot(loss_array[:, 0], loss_array[:, 1], label='Training Loss')
+    plt.plot(loss_array[:, 0], loss_array[:, 1], label='Training loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss values')
     plt.xlim(loss_array[0, 0], loss_array[-1, 0])

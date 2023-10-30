@@ -19,8 +19,8 @@ from dnn_iris2 import train, evaluate
 # Define hyperparameters
 EPOCH_MAX = 50
 EPOCH_LOG = 1
-OPTIMIZER_PARAM = { 'lr': 0.01 }
-SCHEDULER_PARAM = { 'step_size': 10, 'gamma': 0.5 }
+OPTIMIZER_PARAM = {'lr': 0.01}
+SCHEDULER_PARAM = {'step_size': 10, 'gamma': 0.5}
 DATA_PATH = './data'
 DATA_LOADER_PARAM = { 'batch_size': 100, 'shuffle': True }
 USE_CUDA = torch.cuda.is_available()
@@ -132,8 +132,8 @@ if __name__ == '__main__':
     # 4.1. Visualize the loss curves
     plt.title(f'Training and Validation Losses (time: {elapse:.2f} [min] @ CUDA: {USE_CUDA})')
     loss_array = np.array(loss_list)
-    plt.plot(loss_array[:,0], loss_array[:,1], label='Training Loss')
-    plt.plot(loss_array[:,0], loss_array[:,2], label='Validation Loss')
+    plt.plot(loss_array[:,0], loss_array[:,1], label='Training loss')
+    plt.plot(loss_array[:,0], loss_array[:,2], label='Validation loss')
     plt.xlabel('Epochs')
     plt.ylabel('Loss values')
     plt.xlim(loss_array[0,0], loss_array[-1,0])

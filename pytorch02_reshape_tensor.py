@@ -14,11 +14,11 @@ q = y.view(1, -1)       # tensor([[29, 3, 18, 10, 27, 10, 12, 5]])
 print(q.shape, q)       # torch.Size([1, 8])
 r = y.view(2, -1)       # tensor([[29, 3, 18, 10], [27, 10, 12, 5]])
 print(r.shape, r)       # torch.Size([2, 4])
-# cf. tensor also supports 'reshape' which is same with 'view'.
+# Note) tensor also supports 'reshape' which is same with 'view'.
 s = y.reshape(2, -1, 1) # tensor([[[29], [3], [18], [10]], [[27], [10], [12], [5]]])
 print(s.shape, s)       # torch.Size([2, 4, 1])
 
-ss = s.squeeze(2)       # cf. s.squeeze(0) and s.squeeze(1) are effectless.
+ss = s.squeeze(2)       # Note) s.squeeze(0) and s.squeeze(1) are effectless.
 print(ss)               # tensor([[29, 3, 18, 10], [27, 10, 12, 5]])
 u0 = ss.unsqueeze(0)    # tensor([[[29, 3, 18, 10], [27, 10, 12,  5]]])
 print(u0.shape, u0)     # torch.Size([1, 2, 4])
@@ -39,14 +39,14 @@ print(t_102, t_102.is_contiguous()) #           27, 10]], ... ]) False
 t_201 = y.permute(2, 0, 1)          # tensor([[[29, 18],
 print(t_201, t_201.is_contiguous()) #          [27, 12]], ... ]) False
 
-# cf. Reshaping does not copy contents.
+# Note) Reshaping does not copy contents.
 y[0,0,0] = 27
 print(p)                            # tensor([27, 3, 18, 10, 27, 10, 12, 5])
 print(t_021)                        # tensor([[[27, 18], ...], ...])
 print(c_021)                        # tensor([[[29, 18], ...], ...])
 
 # Copy a tensor and detach it from its connected computational graph
-z = y.clone().detach()              # cf. x.clone()
+z = y.clone().detach()              # Note) x.clone()
 y[0,0,0] = 1
 print(y)                            # tensor([[[ 1, 3], ...], ...])
 print(z)                            # tensor([[[27, 3], ...], ...])

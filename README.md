@@ -5,10 +5,10 @@ _Deep learning tutorial with PyTorch_ has been initiated to teach undergraduate 
 * Download [my practice examples in a ZIP file](https://github.com/mint-lab/dl_tutorial/archive/master.zip)
 
 This tutorial is the last part of my four sequels of tutorials. Many examples and practices are connected each other. Please refer its neighborhood tutorials also.
-1. Python Review: From Beginners to Intermediate
-2. Programming meets Mathematics: Building Mathematical Intuition with SciPy
-3. Machine Learning Tutorial with Scikit-learn
-4. [Deep Learning Tutorial with PyTorch](https://github.com/mint-lab/dl_tutorial)
+1. _Python_ Review: From Beginners to Intermediate
+2. Programming meets Mathematics: Building Mathematical Intuition with _SciPy_
+3. Machine Learning Tutorial with _scikit-learn_
+4. [Deep Learning Tutorial with _PyTorch_](https://github.com/mint-lab/dl_tutorial)
 
 
 ### Practice Examples
@@ -24,9 +24,9 @@ Source codes are enumerated in the order of [my tutorial slides](https://github.
   * [Gradient Descent by Hands](https://github.com/mint-lab/dl_tutorial/blob/master/pytorch06_grad_descent.py)
   * [Gradient Descent by `torch.optim`](https://github.com/mint-lab/dl_tutorial/blob/master/pytorch06_grad_descent_optimizer.py)
 * **Neural Network**
-  * [Visualizing Activation Functions](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic01_activation_func.py)
-  * [Observing Vanishing Gradient - Sigmoid](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic02_vanishing_grad.py)
-  * [Observing Vanishing Gradient - ReLU](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic02_vanishing_grad_relu.py)
+  * [Visualizing Activation Functions](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic_activation_func.py)
+  * [Observing Vanishing Gradient - Sigmoid](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic_vanishing_grad.py)
+  * [Observing Vanishing Gradient - ReLU](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_basic_vanishing_grad_relu.py)
   * The Iris Flower Dataset [[UCI ML Repository]](https://archive.ics.uci.edu/ml/datasets/iris)
     * [Iris Flower Classification - No Class](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_iris2_no_class.py)
     * [Iris Flower Classification - My Style](https://github.com/mint-lab/dl_tutorial/blob/master/dnn_iris2.py)
@@ -36,7 +36,7 @@ Source codes are enumerated in the order of [my tutorial slides](https://github.
     * [Digit Classificaiton with the MNIST Dataset](https://github.com/mint-lab/dl_tutorial/blob/master/cnn_mnist.py)
     * [Loading My Network and Testing It](https://github.com/mint-lab/dl_tutorial/blob/master/cnn_mnist_load.py)
     * [Different Styles for NN Classes](https://github.com/mint-lab/dl_tutorial/blob/master/cnn_mnist_class_style.py)
-  * [Visualizing Learning Rate Schedulers](https://github.com/mint-lab/dl_tutorial/blob/master/cnn_basic01_lr_scheduler.py)
+  * [Visualizing Learning Rate Schedulers](https://github.com/mint-lab/dl_tutorial/blob/master/cnn_basic_lr_scheduler.py)
 * **Recurrent Neural Network**
   * The Name2Lang Dataset [[homepage]](https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial)
     * [Name2Lang Classification with a Character-level RNN](https://github.com/mint-lab/dl_tutorial/blob/master/rnn_name2lang.py)

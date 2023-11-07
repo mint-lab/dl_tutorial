@@ -19,12 +19,12 @@ model.fit(iris.data, iris.target)
 for c in range(len(model.classes_)):
     data = iris.data[iris.target == c,:]
     print(f'## Class {c}')
-    print('  * Trained prior = ' + np.array2string(model.class_prior_[c], precision=3))
-    print('  * Manual  prior = ' + '{:.3f}'.format(len(data) / len(iris.data)))
-    print('  * Trained mean  = ' + np.array2string(model.theta_[c], precision=3))
-    print('  * Manual  mean  = ' + np.array2string(np.mean(data, axis=0), precision=3))
-    print('  * Trained Sigma = ' + np.array2string(model.sigma_[c], precision=3))
-    print('  * Manual  Sigma = ' + np.array2string(np.var(data, axis=0), precision=3))
+    print('  * Trained prior    = ' + np.array2string(model.class_prior_[c], precision=3))
+    print('  * Manual  prior    = ' + '{:.3f}'.format(len(data) / len(iris.data)))
+    print('  * Trained mean     = ' + np.array2string(model.theta_[c], precision=3))
+    print('  * Manual  mean     = ' + np.array2string(np.mean(data, axis=0), precision=3))
+    print('  * Trained variance = ' + np.array2string(model.sigma_[c], precision=3))
+    print('  * Manual  variance = ' + np.array2string(np.var(data, axis=0), precision=3))
 
 # Visualize training results (decision boundaries)
 x_min, x_max = iris.data[:, 0].min() - 1, iris.data[:, 0].max() + 1

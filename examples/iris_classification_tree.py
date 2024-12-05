@@ -19,7 +19,6 @@ y_min, y_max = iris.data[:, 1].min() - 1, iris.data[:, 1].max() + 1
 xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.01), np.arange(y_min, y_max, 0.01))
 xy = np.vstack((xx.flatten(), yy.flatten())).T
 zz = model.predict(xy)
-plt.contourf(xx, yy, zz.reshape(xx.shape), cmap=ListedColormap(iris.color), alpha=0.2)
 
 # Test the model
 predict = model.predict(iris.data)
@@ -28,6 +27,7 @@ accuracy = metrics.balanced_accuracy_score(iris.target, predict)
 # Visualize testing results
 plt.figure()
 plt.title(f'Decision tree ({accuracy:.3f})')
+plt.contourf(xx, yy, zz.reshape(xx.shape), cmap=ListedColormap(iris.color), alpha=0.2)
 plt.scatter(iris.data[:,0], iris.data[:,1], c=iris.color[iris.target], edgecolors=iris.color[predict])
 plt.xlabel(iris.feature_names[0])
 plt.ylabel(iris.feature_names[1])

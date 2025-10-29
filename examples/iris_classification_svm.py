@@ -9,7 +9,7 @@ iris.data = iris.data[:,0:2]
 iris.feature_names = iris.feature_names[0:2]
 iris.color = np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)])
 
-# Instantiate training models
+# Instantiate classification models
 models = [
     {'name': 'svm.LinearSVC',               'obj': svm.LinearSVC()},
     {'name': 'svm.SVC(linear)',             'obj': svm.SVC(kernel='linear')},

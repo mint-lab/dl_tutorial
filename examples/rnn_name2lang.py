@@ -69,7 +69,7 @@ class MyRNN(nn.Module):
 
     def forward(self, x):
         output, hidden = self.rnn(x)
-        x = self.fc(output[-1])  # Use output of the last sequence
+        x = self.fc(output[-1])  # Use the output of the last sequence
         return x
 
 # Predict the best result of the given text

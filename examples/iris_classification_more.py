@@ -9,7 +9,7 @@ iris.data = iris.data[:,0:2]
 iris.feature_names = iris.feature_names[0:2]
 iris.color = np.array([(1, 0, 0), (0, 1, 0), (0, 0, 1)])
 
-# Instantiate training models
+# Instantiate classification models
 models = [
     {'name': 'linear_model.SGD',            'obj': linear_model.SGDClassifier()},
     {'name': 'naive_bayes.Gaussian',        'obj': naive_bayes.GaussianNB()},

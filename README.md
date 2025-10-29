@@ -27,6 +27,7 @@ This tutorial is the last part of my lecture. Its prior knowledge on Python and 
   * Lab) Breast Cancer Classification [[slides]](https://github.com/mint-lab/dl_tutorial/blob/master/slides/ml01_lab.pdf) [[skeleton code]](https://github.com/mint-lab/dl_tutorial/blob/master/examples/wdbc_classification_skeleton.py)
 * **Regression**
   * [Linear Regression](https://github.com/mint-lab/dl_tutorial/blob/master/examples/line_fitting_sklearn.py)
+  * [SVM Regressors](https://github.com/mint-lab/dl_tutorial/blob/master/examples/class_score_predict_sklearn.py)
 * **Clustering**
   * [K-means Clustering](https://github.com/mint-lab/dl_tutorial/blob/master/examples/iris_clustering_kmeans.py)
 * **Data Separation**

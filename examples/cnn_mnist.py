@@ -85,7 +85,7 @@ def predict(image, model):
             tensor = TF.rgb_to_grayscale(tensor)    # Make grayscale
         tensor = TF.resize(tensor, 28)              # Resize to 28 x 28
         dev = next(model.parameters()).device
-        tensor = tensor.unsqueeze(0).to(dev)        # Add onw more dims
+        tensor = tensor.unsqueeze(0).to(dev)        # Add one more dim
 
         output = model(tensor)
         digit = torch.argmax(output, dim=1)

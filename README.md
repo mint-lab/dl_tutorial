@@ -67,7 +67,11 @@ This tutorial is the last part of my lecture. Its prior knowledge on Python and 
   * The Name2Lang Dataset [[homepage]](https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial)
     * [Name2Lang Classification with a Character-level RNN](https://github.com/mint-lab/dl_tutorial/blob/master/examples/rnn_name2lang.py)
 * **Transformer**
-  * [Transformer from Scratch](https://github.com/graykode/nlp-tutorial/blob/master/5-1.Transformer/Transformer.py) (Reference: The code is from [graykode's nlp-tutorial](https://github.com/graykode/nlp-tutorial/))
+  * Machine Translation
+    * [Transformer from Scratch](https://github.com/graykode/nlp-tutorial/blob/master/5-1.Transformer/Transformer.py) (Reference: The code is from [graykode's nlp-tutorial](https://github.com/graykode/nlp-tutorial/))
+    * [Transformer using PyTorch](https://github.com/mint-lab/dl_tutorial/blob/master/examples/tf_translation_pytorch.py)
+    * [Transformer using Hugging Face Transformers](https://github.com/mint-lab/dl_tutorial/blob/master/examples/tf_translation_hf.py)
+    * [Transformer using Hugging Face Transformers with the Pretrained mBART Model](https://github.com/mint-lab/dl_tutorial/blob/master/examples/tf_translation_hf_pretrained.py)
 
 > **Note)** All examples contain their basic NN architectures and hyperparameters. One of main objectives in practices will be their performance improvement by changing the architectures and selecting hyperparameters.
 

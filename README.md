@@ -45,7 +45,7 @@ This tutorial is the last part of my lecture. Its prior knowledge on Python and 
   * [Line Fitting from Two Points](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch03_line_fitting.py)
   * [CPU vs. GPU-acceleration](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch04_cpu_vs_gpu.py)
   * [Automatic Differentiation](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch05_autograd.py)
-  * [Automatic Differentiation - More Analysis](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch05_autograd_analysis.py)
+  * [Automatic Differentiation - More Analysis](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch05_autograd_analysis.py) (Reference: The code is from [Dable Tech Blog](https://dabletech.oopy.io/99645b3b-d58a-4225-9253-3589b98c5bb1).)
   * [Gradient Descent by Hands](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch06_grad_descent.py)
   * [Gradient Descent by `torch.optim`](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch06_grad_descent_optimizer.py)
   * Lab) Object Detection using YOLO [[slides]](https://github.com/mint-lab/dl_tutorial/blob/master/slides/dl01_lab.pdf) [[skeleton code (py)]](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch_yolo.py) [[skeleton code (ipynb)]](https://github.com/mint-lab/dl_tutorial/blob/master/examples/pytorch_yolo.ipynb)
@@ -66,6 +66,8 @@ This tutorial is the last part of my lecture. Its prior knowledge on Python and 
 * **Recurrent Neural Network**
   * The Name2Lang Dataset [[homepage]](https://pytorch.org/tutorials/intermediate/char_rnn_classification_tutorial)
     * [Name2Lang Classification with a Character-level RNN](https://github.com/mint-lab/dl_tutorial/blob/master/examples/rnn_name2lang.py)
+* **Transformer**
+  * [Transformer from Scratch](https://github.com/graykode/nlp-tutorial/blob/master/5-1.Transformer/Transformer.py) (Reference: The code is from [graykode's nlp-tutorial](https://github.com/graykode/nlp-tutorial/))
 
 > **Note)** All examples contain their basic NN architectures and hyperparameters. One of main objectives in practices will be their performance improvement by changing the architectures and selecting hyperparameters.
 

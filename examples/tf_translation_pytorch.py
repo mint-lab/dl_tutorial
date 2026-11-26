@@ -3,7 +3,7 @@ import torch.nn as nn
 
 # Transformer model
 class Translator(nn.Module):
-    def __init__(self, src_vocab_size, tgt_vocab_size, d_model=32, max_len=32):
+    def __init__(self, src_vocab_size, tgt_vocab_size, d_model=512, max_len=32):
         super().__init__()
         self.src_emb = nn.Embedding(src_vocab_size, d_model, padding_idx=0)
         self.tgt_emb = nn.Embedding(tgt_vocab_size, d_model, padding_idx=0)
@@ -11,14 +11,14 @@ class Translator(nn.Module):
 
         self.transformer = nn.Transformer(
             d_model=d_model,
-            nhead=4,
-            num_encoder_layers=1,
-            num_decoder_layers=1,
-            dim_feedforward=64,
+            nhead=8,
+            num_encoder_layers=6,
+            num_decoder_layers=6,
+            dim_feedforward=2048,
             dropout=0.0,
             batch_first=True,
         )
-        self.output = nn.Linear(d_model, tgt_vocab_size)
+        self.output = nn.Linear(d_model, tgt_vocab_size, bias=False)
 
     def forward(self, src, tgt):
         # src, tgt: [batch, sequence_length]
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     model = Translator(len(src_vocab), len(tgt_vocab))
     # Disable the experimental nested-tensor inference optimization.
     model.transformer.encoder.use_nested_tensor = False
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.003)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
     criterion = nn.CrossEntropyLoss(ignore_index=0)
 
     # 3. Training with teacher forcing

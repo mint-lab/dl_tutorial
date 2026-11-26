@@ -26,13 +26,13 @@ if __name__ == "__main__":
     # 2. Create a small BART initialized from scratch
     config = BartConfig(
         vocab_size=len(vocab),
-        d_model=32,
-        encoder_layers=1,
-        decoder_layers=1,
-        encoder_attention_heads=4,
-        decoder_attention_heads=4,
-        encoder_ffn_dim=64,
-        decoder_ffn_dim=64,
+        d_model=512,
+        encoder_layers=6,
+        decoder_layers=6,
+        encoder_attention_heads=8,
+        decoder_attention_heads=8,
+        encoder_ffn_dim=2048,
+        decoder_ffn_dim=2048,
         max_position_embeddings=32,
         activation_function="relu",
         dropout=0.0,
@@ -45,7 +45,7 @@ if __name__ == "__main__":
         forced_eos_token_id=None,
     )
     model = BartForConditionalGeneration(config)
-    optimizer = torch.optim.Adam(model.parameters(), lr=0.003)
+    optimizer = torch.optim.Adam(model.parameters(), lr=0.0001)
 
     # 3. Training
     model.train()
